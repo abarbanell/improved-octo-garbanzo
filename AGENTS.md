@@ -2,32 +2,44 @@
 
 ## Project Overview
 
-This is an experimental repository for exploring AI-assisted development workflows with Ona. The project does not yet have a defined language or framework — agents should ask before assuming a tech stack.
+Prototype web application built with Flask (Python). Used for exploring AI-assisted development workflows with Ona.
 
 Development environment: Dev container using `mcr.microsoft.com/devcontainers/universal:4.0.1-noble`.
 
 ## Repository Layout
 
 ```
+app.py                  # Flask application entry point
+templates/              # Jinja2 HTML templates
+static/                 # CSS, JS, and other static assets
+requirements.txt        # Python dependencies
 .devcontainer/          # Dev container configuration
 .ona/                   # Ona review and skill files
-README.md               # Project description
 AGENTS.md               # This file — conventions for AI agents
-AGENTS-IMPROVEMENT-SPEC.md  # Improvement plan for agent configuration
 ```
 
 ## Development Setup
 
 1. Open the repository in an Ona environment (or any devcontainer-compatible tool).
-2. The universal image includes Node.js, Python, Go, Java, and common CLI tools.
-3. No additional setup steps are required until the project has source code.
+2. Create a virtualenv and install dependencies:
+   ```
+   python3 -m venv venv
+   . venv/bin/activate
+   pip install -r requirements.txt
+   ```
+3. Run the app:
+   ```
+   python app.py
+   ```
+   The server starts on port 5000 with debug mode enabled.
 
 ## Conventions
 
 ### Code Style
 
-- Match the style of surrounding code. When no surrounding code exists, follow the language's community standard (e.g., `gofmt` for Go, Prettier defaults for JS/TS, PEP 8 for Python).
-- Use meaningful variable and function names. Avoid abbreviations unless they are universally understood (e.g., `ctx`, `err`, `req`, `res`).
+- Follow PEP 8 for Python code.
+- Use meaningful variable and function names. Avoid abbreviations unless universally understood (e.g., `ctx`, `err`, `req`, `res`).
+- Templates use Jinja2. Keep logic in Python; templates should only handle presentation.
 
 ### Commit Messages
 
@@ -50,7 +62,7 @@ AGENTS-IMPROVEMENT-SPEC.md  # Improvement plan for agent configuration
 
 ## Testing
 
-No test framework is configured yet. When one is added:
+No test framework is configured yet. When one is added (likely `pytest`):
 - Run the full test suite before committing.
 - New code should include tests.
 - Document the test command in this section.
@@ -59,9 +71,10 @@ No test framework is configured yet. When one is added:
 
 ### Adding a new dependency
 
-1. Verify `.gitignore` covers the dependency directory (e.g., `node_modules/`, `venv/`).
-2. Install the dependency using the project's package manager.
-3. Commit the manifest file (e.g., `package.json`) but not the lock file unless the project explicitly tracks it.
+1. Activate the virtualenv: `. venv/bin/activate`
+2. Install: `pip install <package>`
+3. Update requirements: `pip freeze > requirements.txt`
+4. Commit `requirements.txt`.
 
 ### Starting a new feature
 
@@ -75,4 +88,4 @@ No test framework is configured yet. When one is added:
 - Do not commit `node_modules/`, `venv/`, `__pycache__/`, or other dependency/build directories.
 - Do not modify `.devcontainer/devcontainer.json` without explicit approval.
 - Do not create arbitrary markdown files — update existing docs or code comments instead.
-- Do not assume a tech stack. If the project has no source code, ask before scaffolding.
+- Do not add JavaScript frameworks (React, Vue, etc.) unless explicitly asked. This is a server-rendered Flask app.
