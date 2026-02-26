@@ -13,6 +13,8 @@ app.py                  # Flask application entry point
 templates/              # Jinja2 HTML templates
 static/                 # CSS, JS, and other static assets
 requirements.txt        # Python dependencies
+.env.example            # Template for required environment variables
+.gitignore              # Git ignore rules
 .devcontainer/          # Dev container configuration
 .ona/                   # Ona review and skill files
 AGENTS.md               # This file — conventions for AI agents
@@ -27,11 +29,28 @@ AGENTS.md               # This file — conventions for AI agents
    . venv/bin/activate
    pip install -r requirements.txt
    ```
-3. Run the app:
+3. Copy `.env.example` to `.env` and fill in values (see README for details):
+   ```
+   cp .env.example .env
+   ```
+4. Run the app:
    ```
    python app.py
    ```
-   The server starts on port 5000 with debug mode enabled.
+   The server starts on port 5000. Set `FLASK_DEBUG=1` in `.env` to enable debug mode.
+
+## Architecture
+
+Server-rendered Flask app with Google OAuth via Authlib.
+
+Routes:
+- `/` — Login page (shows logout confirmation when arriving from `/logout`)
+- `/login` — Redirects to Google OAuth consent screen
+- `/callback` — OAuth callback, stores user info in session
+- `/profile` — Displays user profile data (requires login)
+- `/logout` — Clears session, redirects to `/`
+
+User data is stored in the Flask session (cookie-based). No database.
 
 ## Conventions
 
