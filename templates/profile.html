@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <h1>Your Profile</h1>
+
+        {% if user.picture %}
+        <img src="{{ user.picture }}" alt="Profile picture" class="avatar">
+        {% endif %}
+
+        <table>
+            {% for key, value in user.items() %}
+            <tr>
+                <th>{{ key }}</th>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <a href="{{ url_for('logout') }}" class="btn btn-secondary">Sign out</a>
+    </main>
+</body>
+</html>
