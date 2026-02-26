@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        {% if logged_out %}
+        <div class="message">You have been safely logged out.</div>
+        {% endif %}
+        <h1>Sign In</h1>
+        <a href="{{ url_for('login') }}" class="btn">Sign in with Google</a>
+    </main>
+</body>
+</html>
