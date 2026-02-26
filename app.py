@@ -1,5 +1,9 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, redirect, render_template, session, url_for
 
