@@ -9,6 +9,9 @@
 <body>
     <main>
         <h1>Your Profile</h1>
+        {% if user.provider %}
+        <p>Signed in via <strong>{{ user.provider }}</strong></p>
+        {% endif %}
 
         {% if user.picture %}
         <img src="{{ user.picture }}" alt="Profile picture" class="avatar">

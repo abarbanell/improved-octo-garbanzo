@@ -21,6 +21,16 @@ oauth.register(
     client_kwargs={"scope": "openid email profile"},
 )
 
+oauth.register(
+    name="infomaniak",
+    client_id=os.environ.get("INFOMANIAK_CLIENT_ID"),
+    client_secret=os.environ.get("INFOMANIAK_CLIENT_SECRET"),
+    server_metadata_url="https://login.infomaniak.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile accounts"},
+)
+
+INFOMANIAK_ORG_ID = os.environ.get("INFOMANIAK_ORG_ID")
+
 
 @app.route("/")
 def index():
@@ -39,6 +49,33 @@ def callback():
     token = oauth.google.authorize_access_token()
     userinfo = token.get("userinfo")
     session["user"] = dict(userinfo)
+    session["user"]["provider"] = "google"
+    return redirect(url_for("profile"))
+
+
+@app.route("/login/infomaniak")
+def login_infomaniak():
+    redirect_uri = url_for("callback_infomaniak", _external=True)
+    return oauth.infomaniak.authorize_redirect(redirect_uri)
+
+
+@app.route("/callback/infomaniak")
+def callback_infomaniak():
+    token = oauth.infomaniak.authorize_access_token()
+    userinfo = token.get("userinfo")
+
+    # Verify the user belongs to the required Infomaniak organization
+    if INFOMANIAK_ORG_ID:
+        resp = oauth.infomaniak.get(
+            "https://api.infomaniak.com/1/account", token=token
+        )
+        accounts = resp.json().get("data", [])
+        org_id = int(INFOMANIAK_ORG_ID)
+        if not any(a.get("id") == org_id for a in accounts):
+            return render_template("denied.html"), 403
+
+    session["user"] = dict(userinfo)
+    session["user"]["provider"] = "infomaniak"
     return redirect(url_for("profile"))
 
 
